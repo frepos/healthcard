@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Emergency Health Card</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0A0F1E;
+    color: #E8F4FD;
+    min-height: 100vh;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* TOP STRIP */
+  .top-strip {
+    width: 100%;
+    max-width: 420px;
+    background: rgba(239,68,68,0.12);
+    border: 0.5px solid rgba(239,68,68,0.35);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #F87171;
+    letter-spacing: 0.06em;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  /* THE CARD — physical object metaphor */
+  .card {
+    width: 100%;
+    max-width: 420px;
+    background: #F1F5F9;
+    border-radius: 16px;
+    overflow: hidden;
+    color: #0F172A;
+    border: 1px solid rgba(239,68,68,0.2);
+  }
+
+  .card-header {
+    background: #B91C1C;
+    color: #fff;
+    padding: 14px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .card-header-icon { font-size: 24px; line-height: 1; padding-top: 2px; }
+  .card-header-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .card-header-sub {
+    font-size: 11px;
+    opacity: 0.75;
+    font-family: 'DM Mono', monospace;
+    margin-top: 3px;
+    letter-spacing: 0.03em;
+  }
+
+  /* ALLERGY ALERT — most visible element after name */
+  .allergy-alert {
+    background: #FEF2F2;
+    border-bottom: 2px solid #FCA5A5;
+    padding: 12px 18px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .alert-icon { font-size: 20px; flex-shrink: 0; }
+  .alert-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: #B91C1C;
+    margin-bottom: 3px;
+  }
+  .alert-value {
+    font-size: 15px;
+    font-weight: 700;
+    color: #7F1D1D;
+    letter-spacing: 0.01em;
+  }
+  .alert-sub {
+    font-size: 11px;
+    color: #B91C1C;
+    font-family: 'DM Mono', monospace;
+    margin-top: 2px;
+  }
+
+  .card-body { padding: 14px 18px; }
+
+  /* NAME BLOCK */
+  .name-block {
+    border-bottom: 1px solid #CBD5E1;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+  }
+  .p-name { font-size: 22px; font-weight: 700; color: #0F172A; letter-spacing: -0.01em; }
+  .p-meta {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: #475569;
+    margin-top: 3px;
+  }
+
+  /* INFO GRID */
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .info-cell {
+    background: #fff;
+    border: 1px solid #CBD5E1;
+    border-radius: 7px;
+    padding: 9px 11px;
+  }
+  .info-cell.flag {
+    border-color: #FCA5A5;
+    background: #FFF5F5;
+  }
+  .info-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #64748B;
+    margin-bottom: 3px;
+  }
+  .info-label.red { color: #B91C1C; }
+  .info-value { font-size: 15px; font-weight: 600; color: #0F172A; }
+  .info-value.red { color: #991B1B; }
+
+  /* MEDS */
+  .meds-block {
+    background: #F8FAFC;
+    border: 1px solid #CBD5E1;
+    border-radius: 7px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+  }
+  .meds-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #475569;
+    margin-bottom: 6px;
+  }
+  .med-row {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: #1E293B;
+    padding: 3px 0;
+    border-bottom: 0.5px solid #E2E8F0;
+  }
+  .med-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .med-dose { color: #475569; }
+
+  /* CONTACTS */
+  .contacts-block {
+    border-top: 1px solid #CBD5E1;
+    padding-top: 12px;
+    margin-bottom: 14px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+  .contact-item {}
+  .c-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #64748B;
+    margin-bottom: 2px;
+  }
+  .c-name { font-size: 12px; font-weight: 600; color: #1E293B; }
+  .c-phone { font-family: 'DM Mono', monospace; font-size: 12px; color: #1D4ED8; margin-top: 1px; }
+
+  /* QR SECTION */
+  .qr-block {
+    border-top: 1px dashed #94A3B8;
+    padding-top: 12px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  #qr-wrap { flex-shrink: 0; }
+  .qr-text {}
+  .qr-title { font-size: 12px; font-weight: 600; color: #1E293B; margin-bottom: 3px; }
+  .qr-sub { font-size: 11px; color: #475569; font-family: 'DM Mono', monospace; line-height: 1.5; }
+
+  /* INSTRUCTIONS (below card) */
+  .instructions {
+    width: 100%;
+    max-width: 420px;
+    margin-top: 20px;
+  }
+  .inst-title {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    color: #7B9BB8;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .inst-step {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: #7B9BB8;
+    line-height: 1.5;
+  }
+  .inst-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #3B82F6;
+    min-width: 20px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .inst-step strong { color: #E8F4FD; font-weight: 500; }
+
+  .back-link {
+    margin-top: 24px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: #7B9BB8;
+    text-decoration: none;
+  }
+  .back-link:hover { color: #E8F4FD; }
+
+  /* PRINT / SCREENSHOT OPTIMISATION */
+  @media print {
+    body { background: #fff; padding: 0; }
+    .top-strip, .instructions, .back-link { display: none; }
+    .card { border: 1px solid #999; }
+  }
+</style>
+</head>
+<body>
+
+<div class="top-strip" id="top-strip">
+  ⚕ EMERGENCY ACCESS — Loading health data…
+</div>
+
+<div class="card" id="card">
+  <div class="card-header">
+    <div class="card-header-icon">🚑</div>
+    <div>
+      <div class="card-header-title">Emergency Health Card</div>
+      <div class="card-header-sub">For first responders · No unlock required</div>
+    </div>
+  </div>
+  <div id="card-body">
+    <div style="padding:24px 18px;font-family:'DM Mono',monospace;font-size:13px;color:#475569;">
+      Loading…
+    </div>
+  </div>
+</div>
+
+<div class="instructions" id="instructions">
+  <div class="inst-title">How to use this card</div>
+  <div class="inst-step">
+    <span class="inst-num">01</span>
+    <span>
+      <strong>Lock screen wallpaper:</strong> take a screenshot of this card, crop, and set as your phone's lock screen image. Responders see it without unlocking.
+    </span>
+  </div>
+  <div class="inst-step">
+    <span class="inst-num">02</span>
+    <span>
+      <strong>iOS Medical ID:</strong> open Health app → your profile photo → Medical ID → Edit. Mirror blood type, allergies, conditions, and contacts here too.
+    </span>
+  </div>
+  <div class="inst-step">
+    <span class="inst-num">03</span>
+    <span>
+      <strong>Android Emergency Info:</strong> Settings → Safety & Emergency → Emergency Information. Fill in the same critical fields.
+    </span>
+  </div>
+  <div class="inst-step">
+    <span class="inst-num">04</span>
+    <span>
+      <strong>QR code:</strong> any responder can scan the QR with their own phone camera. No app needed — it opens the online health card directly.
+    </span>
+  </div>
+</div>
+
+<a class="back-link" href="../index.html">← Full profile (requires passphrase)</a>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  // ─────────────────────────────────────────────────────────────────
+  // CHANGE THIS to your actual GitHub Pages URL once deployed
+  // e.g. https://yourusername.github.io/healthcard/online/
+  const ONLINE_CARD_URL = 'https://frepos.github.io/healthcard/online/';
+  // ─────────────────────────────────────────────────────────────────
+
+  function age(dob) {
+    const d = new Date(dob), n = new Date();
+    let a = n.getFullYear() - d.getFullYear();
+    if (n < new Date(n.getFullYear(), d.getMonth(), d.getDate())) a--;
+    return a;
+  }
+
+  function fmtDate(s) {
+    return new Date(s).toLocaleDateString('en-GB',
+      { day: 'numeric', month: 'short', year: 'numeric' });
+  }
+
+  function renderCard(d) {
+    const id = d.identity;
+    const critical = d.allergies.filter(a => a.severity === 'critical');
+    const mild     = d.allergies.filter(a => a.severity !== 'critical');
+
+    document.getElementById('top-strip').textContent =
+      '⚕ EMERGENCY ACCESS — Visible without unlocking the phone';
+
+    document.getElementById('card-body').innerHTML = `
+      <div class="allergy-alert">
+        <div class="alert-icon">⚠️</div>
+        <div>
+          <div class="alert-label">Critical Allergies — Do Not Administer</div>
+          <div class="alert-value">${critical.map(a => a.name).join(' · ')}</div>
+          ${mild.length ? `<div class="alert-sub">Mild: ${mild.map(a=>a.name).join(', ')}</div>` : ''}
+        </div>
+      </div>
+
+      <div class="card-body">
+        <div class="name-block">
+          <div class="p-name">${id.name}</div>
+          <div class="p-meta">
+            DOB: ${fmtDate(id.dob)} · ${age(id.dob)} yrs · ${id.sex}
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-cell">
+            <div class="info-label">Blood Type</div>
+            <div class="info-value">${id.blood_type}</div>
+          </div>
+          <div class="info-cell">
+            <div class="info-label">Organ Donor</div>
+            <div class="info-value">${id.organ_donor ? '✓ Yes' : 'No'}</div>
+          </div>
+          ${d.conditions.map(c => `
+            <div class="info-cell flag">
+              <div class="info-label red">⚠ Condition</div>
+              <div class="info-value red">${c.name}</div>
+            </div>`).join('')}
+        </div>
+
+        <div class="meds-block">
+          <div class="meds-label">Current Medications</div>
+          ${d.medications.map(m => `
+            <div class="med-row">
+              → ${m.name} <span class="med-dose">${m.dose} · ${m.frequency}</span>
+            </div>`).join('')}
+        </div>
+
+        <div class="contacts-block">
+          ${d.contacts.map(c => `
+            <div class="contact-item">
+              <div class="c-label">${c.relation}</div>
+              <div class="c-name">${c.name}</div>
+              <div class="c-phone">${c.phone}</div>
+            </div>`).join('')}
+        </div>
+
+        <div class="qr-block">
+          <div id="qr-wrap"></div>
+          <div class="qr-text">
+            <div class="qr-title">Full health record</div>
+            <div class="qr-sub">
+              Scan with any phone camera.<br>
+              No app or login needed.<br>
+              Opens complete medical profile.
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Generate QR
+    setTimeout(() => {
+      if (typeof QRCode !== 'undefined') {
+        new QRCode(document.getElementById('qr-wrap'), {
+          text: ONLINE_CARD_URL,
+          width: 88,
+          height: 88,
+          colorDark: '#0F172A',
+          colorLight: '#FFFFFF',
+          correctLevel: QRCode.CorrectLevel.M
+        });
+      }
+    }, 200);
+  }
+
+  async function init() {
+    try {
+      const res  = await fetch('../profile.json');
+      const data = await res.json();
+      renderCard(data);
+    } catch(e) {
+      document.getElementById('card-body').innerHTML =
+        '<div style="padding:24px 18px;font-family:\'DM Mono\',monospace;font-size:13px;color:#EF4444;">' +
+        'Could not load profile.json — check the path and CORS settings.</div>';
+    }
+  }
+
+  init();
+</script>
+</body>
+</html>
