@@ -1,0 +1,41 @@
+{
+  "meta": {
+    "version": 4,
+    "updated": "2025-11-02",
+    "token": "a9f2c"
+  },
+  "identity": {
+    "name": "فربد",
+    "dob": "1990-04-12",
+    "sex": "Male",
+    "blood_type": "A+",
+    "organ_donor": true,
+    "height_cm": 178,
+    "weight_kg": 74,
+    "photo_initials": "FM"
+  },
+  "allergies": [
+    { "name": "Penicillin",    "severity": "critical", "reaction": "Anaphylaxis risk" },
+    { "name": "Sulfonamides",  "severity": "critical", "reaction": "Severe" },
+    { "name": "Ibuprofen",     "severity": "mild",     "reaction": "GI intolerance" }
+  ],
+  "conditions": [
+    { "name": "Type 2 Diabetes", "since": "2018", "status": "managed" },
+    { "name": "Hypertension",    "since": "2020", "status": "managed" }
+  ],
+  "medications": [
+    { "name": "Metformin",   "dose": "500 mg", "frequency": "twice daily" },
+    { "name": "Amlodipine",  "dose": "5 mg",   "frequency": "once daily"  }
+  ],
+  "vitals": {
+    "bp_systolic": 118,
+    "bp_diastolic": 76,
+    "resting_hr": 64,
+    "hba1c": "6.8%",
+    "recorded": "2025-10-15"
+  },
+  "contacts": [
+    { "name": "Sara M.",       "relation": "Spouse",           "phone": "+98 912 345 6789", "primary": true  },
+    { "name": "Dr. R. Karimi", "relation": "GP / Physician",   "phone": "+98 21 8800 1234", "primary": false }
+  ]
+}

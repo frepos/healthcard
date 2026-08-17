@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HealthCard — Profile</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --navy:       #0A0F1E;
+    --slate:      #1E2D4A;
+    --slate-lt:   #2A3F5F;
+    --off-white:  #E8F4FD;
+    --muted:      #7B9BB8;
+    --blue:       #3B82F6;
+    --red:        #EF4444;
+    --green:      #10B981;
+    --amber:      #F59E0B;
+    --bd:         rgba(255,255,255,0.08);
+    --bd-med:     rgba(255,255,255,0.14);
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: var(--navy);
+    color: var(--off-white);
+    min-height: 100vh;
+  }
+
+  /* ── LOCK SCREEN ── */
+  #lock {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    padding: 24px;
+  }
+  .lock-logo {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.14em;
+    color: var(--blue);
+    margin-bottom: 32px;
+  }
+  .lock-card {
+    background: var(--slate);
+    border: 0.5px solid var(--bd-med);
+    border-radius: 14px;
+    padding: 28px 24px;
+    width: 100%;
+    max-width: 340px;
+  }
+  .lock-title { font-size: 18px; font-weight: 600; margin-bottom: 6px; }
+  .lock-sub { font-size: 13px; color: var(--muted); margin-bottom: 24px; font-family: 'DM Mono', monospace; }
+  .lock-input {
+    width: 100%;
+    background: rgba(255,255,255,0.05);
+    border: 0.5px solid var(--bd-med);
+    border-radius: 8px;
+    padding: 12px 14px;
+    color: var(--off-white);
+    font-size: 15px;
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.1em;
+    margin-bottom: 12px;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .lock-input:focus { border-color: var(--blue); }
+  .lock-btn {
+    width: 100%;
+    background: var(--blue);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+  .lock-btn:hover { opacity: 0.88; }
+  .lock-error {
+    font-size: 12px;
+    color: #FCA5A5;
+    font-family: 'DM Mono', monospace;
+    margin-top: 10px;
+    display: none;
+  }
+  .lock-hint {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    margin-top: 16px;
+    text-align: center;
+    opacity: 0.7;
+  }
+  .em-link {
+    margin-top: 20px;
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    text-align: center;
+  }
+  .em-link a { color: #F87171; text-decoration: none; }
+  .em-link a:hover { text-decoration: underline; }
+
+  /* ── APP ── */
+  #app { display: none; }
+
+  /* NAV */
+  .nav {
+    display: flex;
+    align-items: center;
+    padding: 14px 20px;
+    border-bottom: 0.5px solid var(--bd);
+    background: rgba(10,15,30,0.97);
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    gap: 8px;
+  }
+  .nav-brand {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--blue);
+    margin-right: auto;
+  }
+  .nav-em-link {
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    color: #F87171;
+    text-decoration: none;
+    border: 0.5px solid rgba(239,68,68,0.35);
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.15s;
+  }
+  .nav-em-link:hover { background: rgba(239,68,68,0.1); }
+  .nav-signout {
+    font-size: 12px;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    background: none;
+    border: 0.5px solid var(--bd-med);
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .nav-signout:hover { color: var(--off-white); }
+
+  /* CONTENT */
+  .content { padding: 24px 20px; max-width: 680px; margin: 0 auto; }
+
+  .profile-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 0.5px solid var(--bd);
+  }
+  .avatar {
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: var(--slate);
+    border: 1.5px solid var(--blue);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Mono', monospace;
+    font-size: 16px;
+    color: var(--blue);
+    flex-shrink: 0;
+  }
+  .profile-name { font-size: 20px; font-weight: 600; }
+  .profile-meta { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 3px; }
+
+  .section-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+    text-transform: uppercase;
+    margin: 24px 0 10px;
+  }
+
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .grid-2 .wide { grid-column: 1 / -1; }
+
+  .cell {
+    background: var(--slate);
+    border: 0.5px solid var(--bd);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .cell-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+  .cell-value { font-size: 14px; font-weight: 500; }
+  .c-blue  { color: #93C5FD; }
+  .c-green { color: #6EE7B7; }
+  .c-red   { color: #FCA5A5; }
+  .c-amber { color: #FCD34D; }
+
+  .tag-row { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 2px; }
+  .tag {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    border: 0.5px solid;
+  }
+  .tag-red    { background: rgba(239,68,68,0.1);  border-color: rgba(239,68,68,0.35);  color: #FCA5A5; }
+  .tag-blue   { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.35); color: #93C5FD; }
+  .tag-green  { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.35); color: #6EE7B7; }
+  .tag-amber  { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.35); color: #FCD34D; }
+
+  .contact-row {
+    background: var(--slate);
+    border: 0.5px solid var(--bd);
+    border-radius: 8px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .contact-dot {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: rgba(59,130,246,0.1);
+    border: 0.5px solid rgba(59,130,246,0.25);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .contact-name { font-size: 14px; font-weight: 500; }
+  .contact-detail { font-size: 12px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 2px; }
+
+  .timestamp {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 28px;
+    padding-top: 16px;
+    border-top: 0.5px solid var(--bd);
+    opacity: 0.7;
+  }
+</style>
+</head>
+<body>
+
+<!-- LOCK SCREEN -->
+<div id="lock">
+  <div class="lock-logo">⚕ HEALTHCARD</div>
+  <div class="lock-card">
+    <div class="lock-title">Your health profile</div>
+    <div class="lock-sub">Enter passphrase to access</div>
+    <input class="lock-input" type="password" id="pass-input"
+           placeholder="passphrase" autocomplete="current-password"
+           onkeydown="if(event.key==='Enter') unlock()">
+    <button class="lock-btn" onclick="unlock()">Unlock</button>
+    <div class="lock-error" id="lock-error">Incorrect passphrase. Try again.</div>
+    <div class="lock-hint">Hint: change this in the &lt;script&gt; block below</div>
+  </div>
+  <div class="em-link">
+    Responder? <a href="em/index.html">Open emergency card →</a>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <nav class="nav">
+    <span class="nav-brand">⚕ HEALTHCARD</span>
+    <a class="nav-em-link" href="em/index.html" target="_blank">⚕ Emergency Card ↗</a>
+    <button class="nav-signout" onclick="signOut()">Sign out</button>
+  </nav>
+
+  <div class="content" id="content">
+    <div style="color:var(--muted);font-family:'DM Mono',monospace;font-size:13px;padding:40px 0;text-align:center;">
+      Loading profile…
+    </div>
+  </div>
+</div>
+
+<script>
+  // ─────────────────────────────────────────────
+  // CHANGE THIS to your own passphrase
+  const PASSPHRASE = 'health2025';
+  // ─────────────────────────────────────────────
+
+  function unlock() {
+    const val = document.getElementById('pass-input').value;
+    if (val === PASSPHRASE) {
+      sessionStorage.setItem('hc_auth', '1');
+      document.getElementById('lock').style.display = 'none';
+      document.getElementById('app').style.display = 'block';
+      loadProfile();
+    } else {
+      const err = document.getElementById('lock-error');
+      err.style.display = 'block';
+      setTimeout(() => { err.style.display = 'none'; }, 3000);
+      document.getElementById('pass-input').value = '';
+    }
+  }
+
+  function signOut() {
+    sessionStorage.removeItem('hc_auth');
+    location.reload();
+  }
+
+  if (sessionStorage.getItem('hc_auth') === '1') {
+    document.getElementById('lock').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadProfile();
+  }
+
+  async function loadProfile() {
+    try {
+      const res  = await fetch('profile.json');
+      const data = await res.json();
+      renderProfile(data);
+    } catch (e) {
+      document.getElementById('content').innerHTML =
+        '<p style="color:#FCA5A5;font-family:\'DM Mono\',monospace;padding:40px 0;">Could not load profile.json — check the path.</p>';
+    }
+  }
+
+  function age(dob) {
+    const d = new Date(dob), n = new Date();
+    let a = n.getFullYear() - d.getFullYear();
+    if (n < new Date(n.getFullYear(), d.getMonth(), d.getDate())) a--;
+    return a;
+  }
+
+  function fmtDate(s) {
+    return new Date(s).toLocaleDateString('en-GB', {day:'numeric',month:'short',year:'numeric'});
+  }
+
+  function severityTag(sev) {
+    if (sev === 'critical') return 'tag-red';
+    if (sev === 'mild')     return 'tag-amber';
+    return 'tag-blue';
+  }
+
+  function renderProfile(d) {
+    const id   = d.identity;
+    const meta = d.meta;
+
+    const html = `
+      <div class="profile-header">
+        <div class="avatar">${id.photo_initials}</div>
+        <div>
+          <div class="profile-name">${id.name}</div>
+          <div class="profile-meta">
+            DOB: ${fmtDate(id.dob)} · ${age(id.dob)} yrs · ${id.sex} · Blood: ${id.blood_type}
+          </div>
+        </div>
+      </div>
+
+      <div class="section-label">Vitals</div>
+      <div class="grid-2">
+        <div class="cell">
+          <div class="cell-label">Blood Type</div>
+          <div class="cell-value c-blue">${id.blood_type}</div>
+        </div>
+        <div class="cell">
+          <div class="cell-label">Height / Weight</div>
+          <div class="cell-value">${id.height_cm} cm / ${id.weight_kg} kg</div>
+        </div>
+        <div class="cell">
+          <div class="cell-label">Blood Pressure</div>
+          <div class="cell-value c-green">${d.vitals.bp_systolic} / ${d.vitals.bp_diastolic} mmHg</div>
+        </div>
+        <div class="cell">
+          <div class="cell-label">Resting HR</div>
+          <div class="cell-value c-green">${d.vitals.resting_hr} bpm</div>
+        </div>
+        <div class="cell">
+          <div class="cell-label">HbA1c</div>
+          <div class="cell-value c-green">${d.vitals.hba1c}</div>
+        </div>
+        <div class="cell">
+          <div class="cell-label">Organ Donor</div>
+          <div class="cell-value ${id.organ_donor ? 'c-green' : 'c-amber'}">${id.organ_donor ? 'Yes' : 'No'}</div>
+        </div>
+        <div class="cell wide">
+          <div class="cell-label">Vitals recorded</div>
+          <div class="cell-value" style="font-family:'DM Mono',monospace;font-size:13px;">${fmtDate(d.vitals.recorded)}</div>
+        </div>
+      </div>
+
+      <div class="section-label">Allergies — Critical</div>
+      <div class="cell wide" style="margin-bottom:0;">
+        <div class="cell-label">Known Allergies</div>
+        <div class="tag-row">
+          ${d.allergies.map(a => `
+            <span class="tag ${severityTag(a.severity)}" title="${a.reaction}">
+              ${a.severity === 'critical' ? '⚠ ' : ''}${a.name}
+            </span>`).join('')}
+        </div>
+      </div>
+
+      <div class="section-label">Conditions</div>
+      <div class="grid-2">
+        ${d.conditions.map(c => `
+          <div class="cell">
+            <div class="cell-label">Since ${c.since}</div>
+            <div class="cell-value">${c.name}</div>
+            <div style="font-size:11px;margin-top:4px;" class="c-green">${c.status}</div>
+          </div>`).join('')}
+      </div>
+
+      <div class="section-label">Medications</div>
+      <div class="grid-2">
+        ${d.medications.map(m => `
+          <div class="cell">
+            <div class="cell-label">${m.frequency}</div>
+            <div class="cell-value">${m.name}</div>
+            <div style="font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px;">${m.dose}</div>
+          </div>`).join('')}
+      </div>
+
+      <div class="section-label">Emergency Contacts</div>
+      ${d.contacts.map(c => `
+        <div class="contact-row">
+          <div class="contact-dot">👤</div>
+          <div>
+            <div class="contact-name">${c.name}${c.primary ? ' <span style="font-size:10px;color:var(--blue);font-family:\'DM Mono\',monospace;">PRIMARY</span>' : ''}</div>
+            <div class="contact-detail">${c.relation} · ${c.phone}</div>
+          </div>
+        </div>`).join('')}
+
+      <div class="timestamp">
+        Record v${meta.version} · Updated ${fmtDate(meta.updated)} · token: ${meta.token}
+      </div>
+    `;
+
+    document.getElementById('content').innerHTML = html;
+  }
+</script>
+</body>
+</html>
